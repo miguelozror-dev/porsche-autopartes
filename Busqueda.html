@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Catálogo Autopartes</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<h1>Catálogo Autopartes</h1>
+
+<select id="selectAnio"><option value="">Año</option></select>
+<select id="selectCategoria"><option value="">Categoría</option></select>
+<select id="selectMarca"><option value="">Marca</option></select>
+<select id="selectModelo"><option value="">Modelo</option></select>
+<select id="selectPieza"><option value="">Pieza</option></select>
+
+<button id="buscarBtn">Buscar</button>
+<button id="limpiarBtn">Limpiar filtros</button>
+
+<div id="resultados"></div>
+
+<script>
+  // Configuración Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBjMPw18gPTyKT1ITPdDzsDkWsEtkHfcqw",
+    authDomain: "porsche-autopartes.firebaseapp.com",
+    projectId: "porsche-autopartes",
+    storageBucket: "porsche-autopartes.firebasestorage.app",
+    messagingSenderId: "822567860266",
+    appId: "1:822567860266:web:d007bcab047a361cfa6b53",
+    measurementId: "G-MWE9HT8F5N"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const selectAnio = document.getElementById('selectAnio');
+  const selectCategoria = document.getElementById('selectCategoria');
+  const selectMarca = document.getElementById('selectMarca');
+  const selectModelo = document.getElementById('selectModelo');
+  const selectPieza = document.getElementById('selectPieza');
+  const resultados = document.getElementById('resultados');
+  const limpiarBtn = document.getElementById('limpiarBtn');
+
+  let autopartes = [];
+
+  async function cargarDatos() {
+      const snapshot = await db.collection('autopartes').get();
+      autopartes = snapshot.docs.map(doc => doc.data());
+      actualizarSelects();
+  }
+
+  function actualizarSelects() {
+      function fillSelect(select, key) {
+          const filtros = {
+              anio: selectAnio.value,
+              categoria: selectCategoria.value,
+              marca: selectMarca.value,
+              modelo: selectModelo.value,
+              pieza: selectPieza.value
+          };
+          filtros[key] = null;
+          const itemsFiltrados = autopartes.filter(item => {
+              for (let f in filtros) {
+                  if(filtros[f] && item[f] !== filtros[f]) return false;
+              }
+              return true;
+          });
+          const valoresUnicos = [...new Set(itemsFiltrados.map(item => item[key]))].sort();
+          select.innerHTML = `<option value="">${select.id.replace('select','')}</option>`;
+          valoresUnicos.forEach(val => {
+              const option = document.createElement('option');
+              option.value = val;
+              option.textContent = val;
+              select.appendChild(option);
+          });
+      }
+      fillSelect(selectAnio, 'anio');
+      fillSelect(selectCategoria, 'categoria');
+      fillSelect(selectMarca, 'marca');
+      fillSelect(selectModelo, 'modelo');
+      fillSelect(selectPieza, 'pieza');
+  }
+
+  function buscar() {
+      const filtros = {
+          anio: selectAnio.value,
+          categoria: selectCategoria.value,
+          marca: selectMarca.value,
+          modelo: selectModelo.value,
+          pieza: selectPieza.value
+      };
+      let resultadosFiltrados = autopartes.filter(item => {
+          for (let key in filtros) {
+              if(filtros[key] && item[key] !== filtros[key]) return false;
+          }
+          return true;
+      });
+
+      resultados.innerHTML = '';
+      if(resultadosFiltrados.length === 0){
+          resultados.innerHTML = '<p>No se encontraron resultados</p>';
+      }
+
+      resultadosFiltrados.forEach(item => {
+          resultados.innerHTML += `
+              <div>
+                  <img src="${item.foto}" alt="${item.descripcion}" width="100">
+                  <div>
+                      <p><b>${item.descripcion}</b></p>
+                      <p>Precio: $${item.precio}</p>
+                      <p>Stock: ${item.stock}</p>
+                      <p>Código SAP: ${item.codigoSAP}</p>
+                  </div>
+              </div>
+          `;
+      });
+  }
+
+  function limpiarFiltros() {
+      selectAnio.value = '';
+      selectCategoria.value = '';
+      selectMarca.value = '';
+      selectModelo.value = '';
+      selectPieza.value = '';
+      actualizarSelects();
+      resultados.innerHTML = '';
+  }
+
+  selectAnio.addEventListener('change', actualizarSelects);
+  selectCategoria.addEventListener('change', actualizarSelects);
+  selectMarca.addEventListener('change', actualizarSelects);
+  selectModelo.addEventListener('change', actualizarSelects);
+  selectPieza.addEventListener('change', actualizarSelects);
+  document.getElementById('buscarBtn').addEventListener('click', buscar);
+  limpiarBtn.addEventListener('click', limpiarFiltros);
+
+  window.addEventListener('load', cargarDatos);
+
+
+
+
+  async function cargarDatos() {
+    const snapshot = await db.collection('autopartes').get();
+    autopartes = snapshot.docs.map(doc => doc.data());
+    console.log(autopartes); // <-- Aquí revisa si aparecen tus datos
+    actualizarSelects();
+}
+
+</script>
+
+</body>
+</html>

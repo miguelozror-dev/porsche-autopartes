@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Porsche AutopartesAdmin</title>
+  
+</head>
+<body>
+
+
+  <h2>Crear usuario</h2>
+
+  <input type="text" id="nombre" placeholder="Nombre">
+  <input type="email" id="email" placeholder="Correo">
+  <input type="password" id="password" placeholder="Contraseña temporal">
+
+  <select id="rol">
+    <option value="cliente">Cliente</option>
+    <option value="admin">Admin</option>
+  </select>
+
+  <button onclick="crearUsuario()">Crear usuario</button>
+  <p id="msg"></p>
+  
+<h3>Usuarios registrados</h3>
+
+<table border="1" width="100%" cellpadding="8">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Correo</th>
+      <th>Rol</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="tablaUsuarios"></tbody>
+</table>
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword 
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  import { 
+    getFirestore, 
+    doc, 
+    setDoc,
+    collection,
+    getDocs,
+    updateDoc,
+    deleteDoc
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBjMPw18gPTyKT1ITPdDzsDkWsEtkHfcqw",
+    authDomain: "porsche-autopartes.firebaseapp.com",
+    projectId: "porsche-autopartes",
+    storageBucket: "porsche-autopartes.firebasestorage.app",
+    messagingSenderId: "822567860266",
+    appId: "1:822567860266:web:d007bcab047a361cfa6b53"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ===============================
+  // CREAR USUARIO
+  // ===============================
+  window.crearUsuario = async () => {
+    const nombre = document.getElementById("nombre").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const rol = document.getElementById("rol").value;
+    const msg = document.getElementById("msg");
+
+    msg.textContent = "";
+
+    if (!nombre || !email || password.length < 8) {
+      msg.textContent = "Completa todos los campos (mínimo 8 caracteres)";
+      return;
+    }
+
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      await setDoc(doc(db, "usuarios", cred.user.uid), {
+        nombre,
+        email,
+        rol,
+        activo: true,
+        debeCambiarClave: true,
+        fechaCreacion: new Date()
+      });
+
+      alert("Usuario creado correctamente");
+      document.querySelectorAll("input").forEach(i => i.value = "");
+      cargarUsuarios();
+
+    } catch (error) {
+      msg.textContent = error.message;
+    }
+  };
+
+  // ===============================
+  // LISTAR USUARIOS
+  // ===============================
+  const tabla = document.getElementById("tablaUsuarios");
+
+  async function cargarUsuarios() {
+    tabla.innerHTML = "";
+    const query = await getDocs(collection(db, "usuarios"));
+
+    query.forEach(d => {
+      const u = d.data();
+      const tr = document.createElement("tr");
+      if (!u.activo) tr.style.opacity = "0.5";
+
+      tr.innerHTML = `
+        <td>${u.nombre}</td>
+        <td>${u.email}</td>
+        <td>${u.rol}</td>
+        <td>${u.activo ? "Activo" : "Bloqueado"}</td>
+        <td>
+          <button onclick="editarUsuario('${d.id}')">Editar</button>
+          <button onclick="bloquearUsuario('${d.id}', ${u.activo})">
+            ${u.activo ? "Bloquear" : "Desbloquear"}
+          </button>
+          <button onclick="eliminarUsuario('${d.id}')">Eliminar</button>
+        </td>
+      `;
+      tabla.appendChild(tr);
+    });
+  }
+
+  // ===============================
+  // EDITAR USUARIO
+  // ===============================
+  window.editarUsuario = async (id) => {
+    const nuevoNombre = prompt("Nuevo nombre del usuario:");
+    if (!nuevoNombre) return;
+
+    await updateDoc(doc(db, "usuarios", id), {
+      nombre: nuevoNombre
+    });
+
+    cargarUsuarios();
+  };
+
+  // ===============================
+  // BLOQUEAR / DESBLOQUEAR
+  // ===============================
+  window.bloquearUsuario = async (id, estado) => {
+    await updateDoc(doc(db, "usuarios", id), {
+      activo: !estado
+    });
+
+    cargarUsuarios();
+  };
+
+  // ===============================
+  // ELIMINAR USUARIO (FIRESTORE)
+  // ===============================
+  window.eliminarUsuario = async (id) => {
+    if (!confirm("¿Eliminar usuario definitivamente?")) return;
+
+    await deleteDoc(doc(db, "usuarios", id));
+    cargarUsuarios();
+  };
+
+  // ===============================
+  // INICIAR
+  // ===============================
+  cargarUsuarios();
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+
+.logo {
+  width: 140px;          
+  height: auto;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  border-radius: 16px;
+}
+.logo {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+logo {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+.azul{
+   width: 100%;
+    height: 115px;
+    background-color: #112543;
+}
+.blanco{
+   width: 100%;
+    height: 30px;
+    background-color: #FFF;
+}
+.rojo{
+   width: 100%;
+    height: 35px;
+    background-color: #cc0000;
+}
+.rojo2{
+   width: 100%;
+    height: 300px;
+    background-color: #cc0000;
+}
+.inp{
+  width: 300px;
+  height: 25px;
+  border-radius: 5px;
+}
+.btn{
+  width: auto;
+  height: 30px;
+  border-radius: 5px;
+}
+.lb{
+  width: auto;
+  height: 20px;
+   border-radius: 5px;
+}
+.btn2{
+  width: 100px;
+  height: 25px;
+  border-radius: 5px;
+}
+td.td2 {
+  padding-right: 60px;
+}
+
+.info {
+  display: none;
+  margin-top: 30px;
+}
+.contenedor {
+  width: 100%;
+  overflow: hidden;
+  background-color: #0b2a4a;
+  padding: 8px 0;
+  position: relative;
+}
+
+.label-rebote {
+  display: inline-block;
+  white-space: nowrap;
+  color: white;
+  font-size: 16px;
+  animation: rebote 20s ease-in-out infinite;
+}
+
+@keyframes rebote {
+  0% {
+    transform: translateX(0);
+  }
+
+  40% {
+    transform: translateX(calc(97vw - 99%));
+  }
+
+  50% {
+    transform: translateX(calc(98vw - 99%)); /* pausa */
+  }
+
+  90% {
+    transform: translateX(0);
+  }
+
+  99% {
+    transform: translateX(0); /* pausa */
+  }
+}
+.btn3 {
+    border: none;        /* Quita el borde */
+    outline: none;       /* Quita el borde al hacer clic */
+    background: #cc0000; /* Color de fondo */
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.btn3:focus {
+    outline: none;
+}
+.btn3 {
+    border: none;
+    outline: none;
+    background: #cc0000;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease; /* animación suave */
+}
+
+.btn3:hover {
+    background: #112543; /* color al pasar el cursor */
+}
+.btn3:hover {
+    background: #112543;
+    color: #fff;
+}
+/*    */
+#miLista {
+    margin-bottom: 150px; /* espacio suficiente para que se despliegue hacia abajo */
+}
+#miLista {
+    width: 150px;       /* ancho del select */
+    height: 20px;       /* altura del select */
+    font-size: 12px;    /* tamaño de letra */
+}
+
+/* Opciones del dropdown */
+#miLista option {
+    font-size: 12px;    /* tamaño de letra de cada opción */
+    padding: 5px;       /* espacio interno de la opción */
+}
+.cuadro {
+    width: 100%;
+    height: 90px;
+    border: 1px solid black;
+    border-radius: 12px;
+}
+.espacio {
+    margin-top: 30px;
+}
+.espacio2 {
+    margin-top: 40px;
+}
+.chat-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #c00000;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,.4);
+}
+
+.chat-container {
+    position: fixed;
+    bottom: 95px;
+    right: 25px;
+    width: 340px;
+    height: 460px;
+    background: #ffffff;
+    border-radius: 12px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 8px 25px rgba(0,0,0,.4);
+    font-family: Arial, sans-serif;
+    border: 2px solid #0b2a4a;
+}
+
+.chat-header {
+    background: #0b2a4a;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header span {
+    cursor: pointer;
+}
+
+.chat-body {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background: #f2f2f2;
+}
+
+.chat-footer {
+    display: flex;
+    padding: 8px;
+    border-top: 1px solid #ccc;
+    background: #fff;
+}
+
+.chat-footer input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.chat-footer button {
+    margin-left: 6px;
+    padding: 8px 14px;
+    background: #c00000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.bot, .user {
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    max-width: 85%;
+    font-size: 14px;
+}
+
+.bot {
+    background: #e6e6e6;
+}
+
+.user {
+    background: #c00000;
+    color: white;
+    margin-left: auto;
+}
+
+.quick-btns {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.quick-btns button {
+    background: #0b2a4a;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.Im{
+  width: 90%;
+  height: 40%;
+}
